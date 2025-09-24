@@ -1,1 +1,3 @@
 # pegas-cassa-test
+
+init
