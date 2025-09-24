@@ -1,0 +1,54 @@
+version: "3.9"
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: laravel-app
+    volumes:
+      - ./src:/var/www/html
+    networks:
+      - laravel
+    depends_on:
+      - db
+      - redis
+
+  nginx:
+    image: nginx:stable
+    container_name: laravel-nginx
+    volumes:
+      - ./src:/var/www/html
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+    ports:
+      - "8080:80"
+    networks:
+      - laravel
+    depends_on:
+      - app
+
+  db:
+    image: postgres:15
+    container_name: laravel-postgres
+    environment:
+      POSTGRES_USER: laravel
+      POSTGRES_PASSWORD: secret
+      POSTGRES_DB: laravel
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - laravel
+
+  redis:
+    image: redis:alpine
+    container_name: laravel-redis
+    ports:
+      - "6379:6379"
+    networks:
+      - laravel
+
+networks:
+  laravel:
+
+volumes:
+  pgdata:
