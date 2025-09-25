@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Services\Resolvers;
 
 use App\Services\FillBin\BinFromFileProcessorInterface;
+use Illuminate\Support\Facades\App;
 use RuntimeException;
 
 final class BinFromFileProcessorResolver
@@ -22,6 +23,6 @@ final class BinFromFileProcessorResolver
             throw new RuntimeException(sprintf('Bin file processor "%s" unexpected', $fileType));
         }
 
-        return new $processor();
+        return App::make($processor);
     }
 }
